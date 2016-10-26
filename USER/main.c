@@ -12,16 +12,16 @@
 #include "niming.h"
 
 int main(void){		
-	u8 t=0,time=0,report=1,start=0;			//é»˜è®¤å¼€å¯ä¸ŠæŠ¥
+	u8 t=0,time=0,report=1,start=0;			//Ä¬ÈÏ¿ªÆôÉÏ±¨
 	u8 t60=0;
 	u8 key;
-	float pitch,roll,yaw,dertayaw; 		//æ¬§æ‹‰è§’
-	short aacx,aacy,aacz;		//åŠ é€Ÿåº¦ä¼ æ„Ÿå™¨åŸå§‹æ•°æ®
-	short gyrox,gyroy,gyroz;	//é™€èºä»ªåŸå§‹æ•°æ®
-	short temp;					//æ¸©åº¦	    
+	float pitch,roll,yaw,dertayaw; 		//Å·À­½Ç
+	short aacx,aacy,aacz;		//¼ÓËÙ¶È´«¸ĞÆ÷Ô­Ê¼Êı¾İ
+	short gyrox,gyroy,gyroz;	//ÍÓÂİÒÇÔ­Ê¼Êı¾İ
+	short temp;					//ÎÂ¶È	    
  	dertayaw = 0.013445;//per three second
 	Init();
-	//mpuDmpInit();//ä¸Šç”µç›´æ¥åˆå§‹åŒ–èåˆæ•°æ®è¾“å‡ºã€‚
+	//mpuDmpInit();//ÉÏµçÖ±½Ó³õÊ¼»¯ÈÚºÏÊı¾İÊä³ö¡£
  	while(1){
 		key=KEY_Scan(0);
 		if(key==KEY0_PRES){
@@ -32,26 +32,26 @@ int main(void){
 		if(key==KEY1_PRES&&start==0){
 			start=1;	
 		}
-		if(start==1){//æŒ‰é”®ä¹‹åå†å¼€å§‹åˆå§‹åŒ–dmpèåˆï¼Œç»™å¼€æœºä¸€å®šçš„æ—¶é—´
+		if(start==1){//°´¼üÖ®ºóÔÙ¿ªÊ¼³õÊ¼»¯dmpÈÚºÏ£¬¸ø¿ª»úÒ»¶¨µÄÊ±¼ä
 			mpuDmpInit();
 			start=2;
 		}
-		if(mpu_dmp_get_data(&pitch,&roll,&yaw)==0){ //æˆåŠŸè·å–ä¸€æ¬¡mpuèåˆä¹‹åçš„å€¼
-			yaw = yaw - dertayaw;//æ¶ˆé™¤åœ°è½¬è¯¯å·®ï¼Œä»¥åä½¿ç”¨åœ°ç£è®¡å¯å¼ƒç”¨èˆªå‘è§’
+		if(mpu_dmp_get_data(&pitch,&roll,&yaw)==0){ //³É¹¦»ñÈ¡Ò»´ÎmpuÈÚºÏÖ®ºóµÄÖµ
+			yaw = yaw - dertayaw;//Ïû³ıµØ×ªÎó²î£¬ÒÔºóÊ¹ÓÃµØ´Å¼Æ¿ÉÆúÓÃº½Ïò½Ç
 			if(yaw < 0) yaw+=360; 
-			if(yaw > 360) yaw-=360; //æ§åˆ¶yawçš„èŒƒå›´æ˜¯0Â°--360Â°
-			temp=MPU_Get_Temperature();	//å¾—åˆ°æ¸©åº¦å€¼
-			MPU_Get_Accelerometer(&aacx,&aacy,&aacz);	//å¾—åˆ°åŠ é€Ÿåº¦ä¼ æ„Ÿå™¨æ•°æ®
-			MPU_Get_Gyroscope(&gyrox,&gyroy,&gyroz);	//å¾—åˆ°é™€èºä»ªæ•°æ®
-			temp=windowfilterT(temp);		//å¯¹æ¸©åº¦ä¸‰è½´åŠ é€Ÿåº¦è¿›è¡Œæ»¤æ³¢ï¼Œå¹³æ»‘çª—å£ã€‚
+			if(yaw > 360) yaw-=360; //¿ØÖÆyawµÄ·¶Î§ÊÇ0¡ã--360¡ã
+			temp=MPU_Get_Temperature();	//µÃµ½ÎÂ¶ÈÖµ
+			MPU_Get_Accelerometer(&aacx,&aacy,&aacz);	//µÃµ½¼ÓËÙ¶È´«¸ĞÆ÷Êı¾İ
+			MPU_Get_Gyroscope(&gyrox,&gyroy,&gyroz);	//µÃµ½ÍÓÂİÒÇÊı¾İ
+			temp=windowfilterT(temp);		//¶ÔÎÂ¶ÈÈıÖá¼ÓËÙ¶È½øĞĞÂË²¨£¬Æ½»¬´°¿Ú¡£
 			aacx=windowfilterAx(aacx);
 			aacy=windowfilterAy(aacy);
 			aacz=windowfilterAz(aacz);
-			if(report)mpu6050_send_data(aacx,aacy,aacz,gyrox,gyroy,gyroz);//ç”¨è‡ªå®šä¹‰å¸§å‘é€åŠ é€Ÿåº¦å’Œé™€èºä»ªåŸå§‹æ•°æ®
+			if(report)mpu6050_send_data(aacx,aacy,aacz,gyrox,gyroy,gyroz);//ÓÃ×Ô¶¨ÒåÖ¡·¢ËÍ¼ÓËÙ¶ÈºÍÍÓÂİÒÇÔ­Ê¼Êı¾İ
 			if(report)usart1_report_imu(aacx,aacy,aacz,gyrox,gyroy,gyroz,(int)(roll*100),(int)(pitch*100),(int)(yaw*10));	
 			if((t%13)==0){
-				updateScaleLine();//ç”»æ ‡å°ºçº¿
-				showxyupdatepo(aacx,aacy,0,0);//ç”»æŒ‡ç¤ºçº¿
+				updateScaleLine();//»­±ê³ßÏß
+				showxyupdatepo(aacx,aacy,0,0);//»­Ö¸Ê¾Ïß
 				showXandY(aacx,aacy);
 				showzupdate(aacz,RED);
 				showprylineupdate(&pitch,&roll,&yaw);
@@ -79,3 +79,9 @@ int main(void){
 		t++; 
 	} 	
 }
+
+
+
+
+
+
